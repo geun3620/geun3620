@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hk.calboard">
+	
+	<!-- property: DTO의 맴버필드,   column:테이블의 컬럼 -->
+	<!-- dto의 맴버필드이름과 DB에 컬럼명이 다를 경우 맵핑해 줄 수 있다. -->
+	<resultMap type="com.hk.dtos.CalDto" id="calDtoMap">
+<!-- 		<id property="id" column="ID" /> -->
+		<result property="cseq"        column="CSEQ" />
+		<result property="id"          column="ID" />
+		<result property="caltitle"    column="CALTITLE" />
+		<result property="calcontent"  column="CALCONTENT" />
+		<result property="mdate"       column="MDATE" />
+		<result property="calregdate"  column="CALREGDATE" />
+		<collection property="loginDto" resultMap="loginDtoMap"  />
+	</resultMap>
+	
+	<resultMap type="com.hk.dtos.LoginDto" id="loginDtoMap">
+		<result property="id"       column="ID" />
+		<result property="name"     column="NAME" />
+		<result property="password" column="PASSWORD" />
+		<result property="address"  column="ADDRESS" />
+		<result property="phone"    column="PHONE" />
+		<result property="email"    column="EMAIL" />
+		<result property="enabled"  column="ENABLED" />
+		<result property="role"     column="ROLE" />
+		<result property="regdate"  column="REGDATE" />
+	</resultMap>
+	
+	<insert id="calInsert" parameterType="calDto">
+		INSERT INTO CALBOARD VALUES(CALBOARD_SEQ.NEXTVAL,
+		#{id},#{caltitle},#{calcontent},#{mdate},SYSDATE)
+	</insert>
+	
+	<select id="getCalBoardList" parameterType="Map" resultMap="calDtoMap">
+		SELECT CSEQ, ID, CALTITLE, CALCONTENT, MDATE, CALREGDATE
+		FROM CALBOARD
+		WHERE ID=#{id} AND  SUBSTR(MDATE,1,8) = #{ymd}
+		ORDER BY MDATE
+	</select>
+	
+	<delete id="mulDel" parameterType="Map">
+		DELETE FROM CALBOARD WHERE CSEQ IN 
+		<foreach collection="cseqs" item="cseq" open="(" close=")" separator=",">
+			#{cseq}
+		</foreach>
+	</delete>
+	
+	<!-- join을 할 경우 조회되는 결과값을 어디에 담을지 고민..  -->
+	<select id="calDetail" parameterType="int" resultMap="calDtoMap">
+<!-- 		SELECT CSEQ,ID,NAME,CALTITLE,CALCONTENT,CALREGDATE -->
+<!-- 		FROM CALBOARD  -->
+<!-- 		WHERE CSEQ = #{cseq} -->
+		SELECT c.CSEQ, c.ID, u.NAME , c.CALTITLE, c.CALCONTENT,c.MDATE,c.CALREGDATE
+		FROM CALBOARD c,USERINFO u
+		WHERE c.ID=u.ID AND c.CSEQ = #{cseq}
+	</select>
+	
+	 <update id="calUpdate" parameterType="calDto">
+   	UPDATE CALBOARD SET CALTITLE=#{caltitle}, CALCONTENT=#{calcontent}, MDATE=#{mdate}
+   								,CALREGDATE=SYSDATE
+   	WHERE CSEQ=#{cseq}
+   </update>
+   
+   <select id="calBoardListView" parameterType="Map" resultType="calDto">
+   	SELECT  CSEQ, ID, CALTITLE, CALCONTENT, MDATE, CALREGDATE
+		FROM(
+			SELECT ROW_NUMBER() OVER(PARTITION BY SUBSTR (MDATE,1,8)ORDER BY MDATE) AS RN,
+				CSEQ, ID, CALTITLE, CALCONTENT, MDATE, CALREGDATE
+			FROM CALBOARD
+			WHERE ID=#{id} AND SUBSTR(MDATE,1,6)=#{yyyyMM}
+		)
+	WHERE RN BETWEEN 1 AND 3
+   </select>
+   <select id="calListCount" parameterType="Map" resultType="calDto">
+   		SELECT COUNT(*)
+		FROM CALBOARD
+		WHERE ID = #{id} AND SUBSTR(MDATE,1,8)= #{yyyyMMdd}
+   </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
