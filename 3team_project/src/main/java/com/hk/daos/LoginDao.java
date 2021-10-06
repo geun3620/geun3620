@@ -74,8 +74,19 @@ private String namespace = "com.hk.login.";
 		List<LoginDto> list = new ArrayList<>();
 		SqlSession sqlSession = null;
 		
-		
+		try {
+			sqlSession = getSqlSessionFactory().openSession(true);
+			list =  sqlSession.selectList(namespace+"",list);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			sqlSession.close();
+		}
 		
 		return list;
 	}
+	
+	//회원 한명에 대한 상세 조회가 가능하게 하자
+	
 }

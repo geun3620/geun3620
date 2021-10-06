@@ -16,4 +16,6 @@
    		SELECT ID,PASSWORD,NAME,ADDRESS,PHONE,EMAIL,ENABLED,ROLE
    		FROM USER_BOARD ORDER BY NAME
    </select>
+   
+   <select id=""></select>
 </mapper>
