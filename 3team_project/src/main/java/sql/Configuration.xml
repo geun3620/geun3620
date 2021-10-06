@@ -8,6 +8,8 @@
 	<typeAliases>
 		<typeAlias type="com.hk.dtos.CalDto" alias="calDto"/>
 		<typeAlias type="com.hk.dtos.LoginDto" alias="loginDto"/>
+		<typeAlias type="com.hk.dtos.BoardDto" alias="BoardDto"/>
+		<typeAlias type="com.hk.dtos.LookDto" alias="LookDto"/>
 	</typeAliases>
 	
 <!-- 	DB접속 정보 셋팅 -->
@@ -26,6 +28,8 @@
 	<mappers>
 		<mapper resource="sql/CalMapper.xml"/>
 		<mapper resource="sql/LoginMapper.xml"/>
+		<mapper resource="sql/BoardMapper.xml"/>
+		<mapper resource="sql/LookMapper.xml"/>
 	</mappers>
 </configuration>
 
