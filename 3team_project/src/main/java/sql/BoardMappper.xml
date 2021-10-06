@@ -1,1 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hk.board">
+
+	<select id="boardlist" resultType="boardDto" parameterType="String">
+		SELECT SEQ, ID, TITLE, CONTENT, REGDATE
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY REGDATE) RN,
+			SEQ, ID, TITLE, CONTENT, REGDATE
+			FROM BOARD
+		)
+		WHERE CEIL (RN/5)=#{pnum}
+	</select>
+	
+	<select id="pcount" resultType="int">
+		SELECT CEIL(COUNT(*)/5)
+		FROM BAORD
+	</select>
+	
+	<insert id="insertboard" parameterType="boardDto" >
+		INSERT INTO BOARD 
+		VALUES(BOARD_SEQ.NEXTVAL, #{id} ,#{title} ,#{content} ,SYSDATE)
+	</insert>
+	
+	<select id="getboard" parameterType="int" resultType="boardDto">
+		SELECT SEQ,ID,TITLE,CONTENT,REGDATE
+		FROM BOARD WHERE seq=#{seq}
+	</select>
+	
+	<update id="updateboard" parameterType="boardDto">
+		UPDATE BOARD 
+		SET TITLE=#{title}, CONTENT=#{content}, REGDATE=SYSDATE 
+		WHERE SEQ=#{seq}	
+	</update>
+	
+	<delete id="delboard" parameterType="String">
+		DELETE FROM BOARD WHERE SEQ=#{seq}
+	</delete>
+   
+   
+   
+</mapper>
