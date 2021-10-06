@@ -12,8 +12,8 @@
    		VALUES (#{id},#{password},#{name},#{address},#{phone},#{email},#{enabled},#{role})
    </insert>
    
-   <select id="idChk" resultType="loginDto" parameterType="Map">
-   		SELECT #{id}
-   		FROM USER_BOARD WHERE ID = #{id}
+   <select id="getAllUserSelect" resultType="loginDto" parameterType="String">
+   		SELECT ID,PASSWORD,NAME,ADDRESS,PHONE,EMAIL,ENABLED,ROLE
+   		FROM USER_BOARD ORDER BY NAME
    </select>
 </mapper>

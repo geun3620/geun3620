@@ -51,14 +51,14 @@ private String namespace = "com.hk.login.";
 		return count>0?true:false;
 	}
 	
-	//아이디 중복 체크 해보자
-	public String idChk(String id) {
-		String resultId = null;
+	//전체 회원을 조회해보자
+	public List<LoginDto> getAllUserSelect(){
+		List<LoginDto> list = new ArrayList<>();
 		SqlSession sqlSession = null;
 		
 		try {
 			sqlSession = getSqlSessionFactory().openSession(true);
-			resultId = sqlSession.selectOne(namespace+"idChk", resultId);
+			list = sqlSession.selectList(namespace+"getAllUserSelect", list);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,13 +66,15 @@ private String namespace = "com.hk.login.";
 			sqlSession.close();
 		}
 		
-		return resultId;
+		return list;
 	}
 	
-	//전체 회원을 조회해보자
+	//사용중인 회원 조회
 	public List<LoginDto> getAllUser(){
 		List<LoginDto> list = new ArrayList<>();
 		SqlSession sqlSession = null;
+		
+		
 		
 		return list;
 	}
