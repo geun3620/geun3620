@@ -23,52 +23,65 @@ public class BoardDao extends SqlMapConfig {
 	}
 	
 	
-	//1.±Û¸ñ·Ï Á¶È¸: select¹® - °á°ú´Â ¿©·¯Çà ¹İÈ¯ --> list¸¦ ¹İÈ¯
-		public List<BoardDao> getBoardList(String pnum){
-			List<BoardDao> list=new ArrayList<BoardDao>();
+	//1.ê¸€ëª©ë¡ ì¡°íšŒ:
+		public List<BoardDto> getBoardList(String pnum){
+			List<BoardDto> list=new ArrayList<BoardDto>();
 			SqlSession sqlSession=null;
 			
 			try {
-				//SqlSessionFactory°´Ã¼ ±¸ÇÔ
 				SqlSessionFactory sqlSessionFactory=getSqlSessionFactory();
-				
-				//SqlSessionFactory°´Ã¼·Î ºÎÅÍ SqlSession°´Ã¼¸¦ ±¸ÇØ¿Â´Ù.
-				//ÀÌ¶§ openSession(true)·Î ½ÇÇàÇÏ¸é autocommit-> true·Î ¼³Á¤
 				sqlSession=sqlSessionFactory.openSession(true);
-				//selectList(Äõ¸®id)½ÇÇàÇÏ¸é °á°ú¸¦ List·Î ¹İÈ¯ÇØ ÁØ´Ù.
-				list=sqlSession.selectList(nameSpace+"boardlist", pnum);
+				
+				list=sqlSession.selectList(nameSpace+"boardlist",pnum);
 			} catch (Exception e) {
-				System.out.println("JDBC½ÇÆĞ:getBoardList():"+getClass());
+				System.out.println("JDBCì‹¤íŒ¨:getBoardList():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
 			}
+			
 			return list;
 		}
 		
+		//ê¸€ëª©ë¡ì˜ í˜ì´ì§€ ìˆ˜ êµ¬í•˜ê¸°
+		public int getPCount(){
+			int pcount=0;
+			SqlSession sqlSession=null;
+			
+			try {
+				SqlSessionFactory sqlSessionFactory=getSqlSessionFactory();
+				
+				sqlSession=sqlSessionFactory.openSession(true);
+				pcount=sqlSession.selectOne(nameSpace+"pcount");
+			} catch (Exception e) {
+				System.out.println("JDBCì‹¤íŒ¨:getPCount():"+getClass());
+				e.printStackTrace();
+			}finally {
+				sqlSession.close();
+			}
+			return pcount;
+		}
 		
-		//2.±ÛÃß°¡ÇÏ±â: ÆäÀÌÁö¿¡¼­ ÀÔ·ÂµÈ °ªÀ» ¹Ş¾Æ¼­ DB¿¡ Ãß°¡ÇÑ´Ù.
-		//           insert¹® ½ÇÇà: ¹İÈ¯°ª???°á°ú°ª ¾ø´Ù.-->´ë½Å Ãß°¡µÈ ÇàÀÇ °³¼ö¸¦ ¹İÈ¯ÇÑ´Ù
-		//           ÆÄ¶ó¹ÌÅÍ Á¤ÀÇ: 
+		
+		//2. ê¸€ ì¶”ê°€í•˜ê¸°
 		public boolean insertBoard(BoardDto dto) {
-			int count=0;//insert¹®¿¡ ÀÇÇØ Ãß°¡µÇ´Â ÇàÀÇ °³¼ö¸¦ ÀúÀåÇÒ º¯¼ö
+			int count=0;
 			SqlSession sqlSession=null;
 			
 			try {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				count=sqlSession.insert(nameSpace+"insertboard", dto );
 			} catch (Exception e) {
-				System.out.println("JDBC½ÇÆĞ:insertBoard():"+getClass());
+				System.out.println("JDBCì‹¤íŒ¨:insertBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
 			}
-			return count>0?true:false;//»ïÇ×¿¬»êÀÚ È°¿ë
+			return count>0?true:false;
 		}
 		
 		
-		//3.±Û»ó¼¼Á¶È¸: select¹®, ÆÄ¶ó¹ÌÅÍ ¹Ş±â??? -->Dbeaver¿¡¼­ Äõ¸® ÀÛ¼ºÇØº¸¸é ¾Ë¾Æ¿ä
-		//    ¹İÈ¯Å¸ÀÔ: ±ÛÇÏ³ªÀÇ ´ëÇÑ Á¤º¸ Á¶È¸--> 1row¸¦ ¹İÈ¯ --> 1row¸¦ ÀúÀåÇÏ´Â °´Ã¼ DTO
+		//3.ê¸€ ìƒì„¸ì¡°íšŒ
 		public BoardDto getBoard(int seq) {
 			BoardDto dto=new BoardDto();
 			SqlSession sqlSession=null;
@@ -76,7 +89,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				dto=sqlSession.selectOne(nameSpace+"getboard", seq);
 			} catch (Exception e) {
-				System.out.println("JDBC½ÇÆĞ:getBoard():"+getClass());
+				System.out.println("JDBCì‹¤íŒ¨:getBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -85,9 +98,7 @@ public class BoardDao extends SqlMapConfig {
 		}
 		
 		
-		//4.±Û¼öÁ¤ÇÏ±â: update¹®, ÆÄ¶ó¹ÌÅÍ ¹Ş±â???
-		// ¼öÁ¤ÇÒ ÄÃ·³: Á¦¸ñ, ³»¿ë, ÀÛ¼ºÀÏ 
-		// ÆÄ¶ó¹ÌÅÍ¹ŞÀ» ¸ñ·Ï: seq,Á¦¸ñ, ³»¿ë
+		//4.ê¸€ ìˆ˜ì •í•˜ê¸°
 		public boolean updateBoard(BoardDto dto) {
 			int count=0;
 			SqlSession sqlSession=null;
@@ -95,7 +106,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				count=sqlSession.update(nameSpace+"updateboard", dto);
 			} catch (Exception e) {
-				System.out.println("JDBC½ÇÆĞ:updateBoard():"+getClass());
+				System.out.println("JDBCì‹¤íŒ¨:updateBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -104,7 +115,7 @@ public class BoardDao extends SqlMapConfig {
 		}
 		
 		
-		//5.±Û»èÁ¦ÇÏ±â: delete¹®, ÆÄ¶ó¹ÌÅÍ ¹Ş±â??? 
+		//5. ê¸€ ì‚­ì œí•˜ê¸°
 		public boolean delBoard(int seq) {
 			int count=0;
 			SqlSession sqlSession=null;
@@ -112,7 +123,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				count=sqlSession.delete(nameSpace+"delboard", seq);
 			} catch (Exception e) {
-				System.out.println("JDBC½ÇÆĞ:delBoard():"+getClass());
+				System.out.println("JDBCì‹¤íŒ¨:delBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -120,28 +131,20 @@ public class BoardDao extends SqlMapConfig {
 			return count>0?true:false;
 		}
 		
-		//±Û ¿©·¯°³ »èÁ¦ÇÏ±â: delete¹® , ÆÄ¶ó¹ÌÅÍ ¹Ş±â seq ¿©·¯°³--> ¹è¿­
-		//Æ®·£Á§¼ÇÃ³¸®: ¸ğµÎ ¼º°øÇÏ¸é ¼º°ø!! ÇÏ³ª¶óµµ ½ÇÆĞ¸é ½ÇÆĞ!! Ã³¸®ÇÏÀÚ
-		//          setAutoCommit(), commit(), rollback() È°¿ë
-		//Æ®·£Á§¼Ç Ã³¸® À¯Çü: 
-		//       1. ¿äÃ» ÇÑ¹ø¿¡  update¹®, insert¹®  ½ÇÇà -> ÀÛ¾÷ÀÇ ¼ö°¡ Á¤ÇØÁø °æ¿ì
-		//       2. ¿äÃ» ÇÑ¹ø¿¡  delete¹® ½ÇÇà -> ¸î¹ø ÀÛ¾÷ÇÒÁö Á¤ÇØÁöÁö ¾ÊÀº °æ¿ì
-		//          --> ÆÄ¶ó¹ÌÅÍ °ªÀ» È®ÀÎÇØ¼­ ¸î¹ø delete¹®À» ½ÇÇàÇÒÁö °áÁ¤
-		//  --> batch°³³ä: µ¿ÀÏÇÑ ¿©·¯ ÀÛ¾÷À» ÇÑ¹ø¿¡ ½ÇÇàÇÏ´Â °³³ä
-		//      a+b , a-b (X)      a+b  a+b  a+b (O)  --> 1+3 , 3+5, 2+10..
+		
+		//6. ê¸€ ì—¬ëŸ¬ê°œ ì‚­ì œí•˜ê¸°
 		public boolean mulDel(String[] seqs) {
 			int count=0;
 			SqlSession sqlSession=null;
 			
 			try {
-				//openSession(false): autocommitÀ» false¼³Á¤-> rollbackÀ» °¡´ÉÇÏ°Ô  
 				sqlSession=getSqlSessionFactory().openSession(false);
 				for (int i = 0; i < seqs.length; i++) {
 					String seq=seqs[i];
 					sqlSession.delete(nameSpace+"delboard", seq);
 				}
 				count=1;
-				sqlSession.commit();//commit½ÇÇà: DB¿¡ ¹İ¿µ
+				sqlSession.commit();
 			} catch (Exception e) {
 				sqlSession.rollback();
 				e.printStackTrace();

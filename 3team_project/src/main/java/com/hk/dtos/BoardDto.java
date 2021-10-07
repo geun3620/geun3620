@@ -12,6 +12,8 @@ public class BoardDto {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	
 	public BoardDto(int seq, String id, String title, String content, Date regdate) {
 		super();
 		this.seq = seq;
@@ -20,6 +22,21 @@ public class BoardDto {
 		this.content = content;
 		this.regdate = regdate;
 	}
+	
+	public BoardDto(String id, String title, String content) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.content = content;
+	}
+	
+	public BoardDto(int seq, String title, String content) {
+		super();
+		this.seq = seq;
+		this.title = title;
+		this.content = content;
+	}
+	
 	public int getSeq() {
 		return seq;
 	}
