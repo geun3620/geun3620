@@ -12,13 +12,41 @@
 		location.href="BoardController.do?command=boardlist";
 	}
 </script>
+
+<style type="text/css">
+table {
+	border-collapse : collapse;
+	table-layout : fixed;
+}
+
+tr {
+	border-bottom : 1px solid black;
+}
+
+th {
+	border : 1px solid black;
+	padding : 15px 5px 15px 5px;
+	text-align : center;
+}
+
+td {
+	border : 1px solid black;
+}
+
+input {
+
+}
+</style>
+
 </head>
 <body>
 
 <h1>게시글 작성하기</h1>
 <form action="BoardController.do" method="post">
 	<input type="hidden" name="command" value="insertboard"/>
-	<table border="1">
+	<table>
+	<col width="15%">
+	<col width="85%">
 		<tr>
 			<th>작성자</th>
 			<td><input type="text" name="id" /></td>
@@ -34,7 +62,6 @@
 		<tr>
 			<td colspan="2">
 				<input type="submit" value="등록" />
-<!-- 			<button>submit이 기본임(타입을 button으로 설정)</button> -->
 				<input type="button" value="목록" onclick="boardList()" />
 			</td>
 		</tr>

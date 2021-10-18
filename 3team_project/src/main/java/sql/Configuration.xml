@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
 <configuration>
 <!-- 	DB 접속정보 파일 설정 -->
 	<properties resource="sql/db.properties"/>
@@ -8,8 +9,8 @@
 	<typeAliases>
 		<typeAlias type="com.hk.dtos.CalDto" alias="calDto"/>
 		<typeAlias type="com.hk.dtos.LoginDto" alias="loginDto"/>
-		<typeAlias type="com.hk.dtos.BoardDto" alias="BoardDto"/>
-		<typeAlias type="com.hk.dtos.LookDto" alias="LookDto"/>
+		<typeAlias type="com.hk.dtos.BoardDto" alias="boardDto"/>
+		<typeAlias type="com.hk.dtos.LookDto" alias="lookDto"/>
 	</typeAliases>
 	
 <!-- 	DB접속 정보 셋팅 -->
@@ -29,8 +30,9 @@
 		<mapper resource="sql/CalMapper.xml"/>
 		<mapper resource="sql/LoginMapper.xml"/>
 		<mapper resource="sql/BoardMapper.xml"/>
-		<mapper resource="sql/LookMapper.xml"/>
+<!-- 		<mapper resource="sql/LookMapper.xml"/> -->
 	</mappers>
+	
 </configuration>
 
 

@@ -3,11 +3,13 @@ package com.hk.dtos;
 import java.util.Date;
 
 public class BoardDto {
+	
 	private int seq;
 	private String id;
 	private String title;
 	private String content;
 	private Date regdate;
+	
 	public BoardDto() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -35,6 +37,11 @@ public class BoardDto {
 		this.seq = seq;
 		this.title = title;
 		this.content = content;
+	}
+	
+	public BoardDto(String id) {
+		super();
+		this.id = id;
 	}
 	
 	public int getSeq() {

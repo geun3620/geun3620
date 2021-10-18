@@ -50,6 +50,11 @@
 		location.href="BoardController.do?command=muldel&chk=<%=dto.getSeq()%>";
 	}
 	
+	//목록으로 돌아가기
+	function boardList(){
+		location.href="BoardController.do?command=boardlist";
+	}
+	
 </script>
 
 </body>

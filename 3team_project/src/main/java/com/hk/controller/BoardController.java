@@ -19,7 +19,7 @@ import com.hk.dtos.BoardDto;
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	// 원하는 쿠키 구하는 메서드
+	/*
 	public Cookie getCookie(String cookieName, HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		Cookie cookie = null;
@@ -29,7 +29,7 @@ public class BoardController extends HttpServlet {
 			}
 		}
 		return cookie;
-	}
+	}*/
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -37,55 +37,28 @@ public class BoardController extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 
-		// 1단계:command값 받기(어떤 요청인지 확인하기 위해)
+		//1단계:command값 받기(어떤 요청인지 확인하기 위해)
 		String command = request.getParameter("command");
 		System.out.println("요청내용:" + command);
 
-		// 2단계:dao객체 생성하기(DB에 연결해서 작업하기 위해 준비)
-		BoardDao dao = BoardDao.getBoardDao();// 싱글턴 패턴으로 구현해보자
+		
+		BoardDao dao = BoardDao.getBoardDao();
 
-		// 3단계:command의 값을 확인하여 분기 실행(요청에 대한 처리)
-		if (command.equals("main")) {// index페이지로 이동
+
+		//3단계:command의 값을 확인하여 분기 실행(요청에 대한 처리)
+		if (command.equals("main")) {
 			response.sendRedirect("index.jsp");
 			
-		} else if (command.equals("boardlist")) {// 글목록을 요청했을 경우
-
-			// 요청된 페이지 번호 파라미터 받기
-			String pnum = request.getParameter("pnum");
-
-			
-			// 특별한 페이지 요청이 없는 경우 1페이지로 셋팅
-			if (pnum == null) {
-				pnum = getCookie("pnum", request).getValue();
-			} else {
-				Cookie cookie = new Cookie("pnum", pnum);// 쿠키생성
-				cookie.setMaxAge(10 * 60);// 쿠키의 유효기간
-				response.addCookie(cookie);// 브라우저로 생성한 쿠키를 추가
-			} 
-
-			// 총 페이지 개수 구하기(5개씩 보여줄때 필요한 페이지수)
-			int pcount = dao.getPCount();
-			
-
-			// 5단계:실행결과 담기(dto,list 등등)
-			List<BoardDto> list = dao.getBoardList(pnum);// 글목록 구하기
-
-			// 6단계:스코프에 객체 담기(key, value)
+		} else if (command.equals("boardlist")) {
+			List<BoardDto> list=dao.getBoardList();
 			request.setAttribute("list", list);
-			// int기본타입 --wrapper클래스(Integer)--> Object참조타입
-			request.setAttribute("pcount", pcount);
+			RequestDispatcher disptch = request.getRequestDispatcher("boardlist.jsp");
+			disptch.forward(request, response);
 
-			// 7단계:페이지 이동
-			// pageContext.forward("boardlist.jsp");
-			RequestDispatcher dispatch = request.getRequestDispatcher("boardlist.jsp");
-			dispatch.forward(request, response);
-
-			// 스코프에 저장된 객체를 전달하지 못한다.
-			// response.sendRedirect("boardlist.jsp");
-		} else if (command.equals("insertform")) {// 글작성 폼이동
+		} else if (command.equals("insertform")) {
 			response.sendRedirect("insertboard.jsp");
 			
-		} else if (command.equals("insertboard")) {// 작성된 글 추가하기
+		} else if (command.equals("insertboard")) {
 			String id = request.getParameter("id");
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
@@ -93,21 +66,14 @@ public class BoardController extends HttpServlet {
 			boolean isS = dao.insertBoard(new BoardDto(id, title, content));
 
 			if (isS) {
-				// pageContext.forward("HkController.do?command=boardlist");
-				// RequestDispatcher
-				// disptch=request.getRequestDispatcher("HkController.do?command=boardlist");
-				// disptch.forward(request, response);
 				response.sendRedirect("BoardController.do?command=boardlist");
 			} else {
-				request.setAttribute("msg", "글추가실패");
-				// pageContext.forward("error.jsp");
+				request.setAttribute("msg", "글 추가 실패");
 				RequestDispatcher disptch = request.getRequestDispatcher("error.jsp");
 				disptch.forward(request, response);
-
-				// request.getRequestDispatcher("error.jsp").forward(request,
-				// response);
 			}
-		} else if (command.equals("detailboard")) {// 상세보기
+			
+		} else if (command.equals("detailboard")) {
 			String seq = request.getParameter("seq");
 			int sseq = Integer.parseInt(seq);
 			BoardDto dto = dao.getBoard(sseq);
@@ -119,7 +85,7 @@ public class BoardController extends HttpServlet {
 
 		} else if (command.equals("muldel")) {
 			String[] seqs = request.getParameterValues("chk");
-
+			
 			boolean isS = dao.mulDel(seqs);
 
 			if (isS) {
@@ -127,23 +93,33 @@ public class BoardController extends HttpServlet {
 						+ "location.href='BoardController.do?command=boardlist';" + "</script>";
 				PrintWriter pw = response.getWriter();
 				pw.print(jsTag);
+				
 			} else {
-				request.setAttribute("msg", "글삭제 실패");
-				// pageContext.forward("error.jsp");
+
+				
+				String jsTag = "<script type='text/javascript'>" + "alert('삭제할 게시물을 선택하세요.');"
+						+ "location.href='BoardController.do?command=boardlist';" + "</script>";
+				PrintWriter pw = response.getWriter();
+				pw.print(jsTag);
+				
+				
+				/*
+				request.setAttribute("msg", "글 삭제 실패");
 				RequestDispatcher disptch = request.getRequestDispatcher("error.jsp");
-				disptch.forward(request, response);
+				disptch.forward(request, response); 
+				*/
+				
 			}
-		} else if (command.equals("updateform")) {// 수정폼 이동(수정할 내용 입력폼)
+		} else if (command.equals("updateform")) {
 			String seq = request.getParameter("seq");
 
 			BoardDto dto = dao.getBoard(Integer.parseInt(seq));
 
 			request.setAttribute("dto", dto);
-			// pageContext.forward("updateboard.jsp");
 			RequestDispatcher disptch = request.getRequestDispatcher("updateboard.jsp");
 			disptch.forward(request, response);
 			
-		} else if (command.equals("updateboard")) {// 수정하기(DB반영)
+		} else if (command.equals("updateboard")) {
 			String seq = request.getParameter("seq");
 
 			String title = request.getParameter("title");
@@ -155,12 +131,19 @@ public class BoardController extends HttpServlet {
 			if (isS) {
 				response.sendRedirect("BoardController.do?command=detailboard&seq=" + seq);
 			} else {
-				request.setAttribute("msg", "글수정실패");
-				// pageContext.forward("error.jsp");
+				request.setAttribute("msg", "글 수정 실패");
 				RequestDispatcher disptch = request.getRequestDispatcher("error.jsp");
 				disptch.forward(request, response);
 			}
+			
+			
+			//여기 정근이오빠가 한거 데려가려고 잠깐 임시로 만든거임
+		} else if (command.equals("chooseMain")) {
+		RequestDispatcher disptch = request.getRequestDispatcher("chooseMain.jsp");
+		disptch.forward(request, response);
+		
 		}
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -23,8 +23,7 @@ public class BoardDao extends SqlMapConfig {
 	}
 	
 	
-	//1.글목록 조회:
-		public List<BoardDto> getBoardList(String pnum){
+		public List<BoardDto> getBoardList(){
 			List<BoardDto> list=new ArrayList<BoardDto>();
 			SqlSession sqlSession=null;
 			
@@ -32,9 +31,9 @@ public class BoardDao extends SqlMapConfig {
 				SqlSessionFactory sqlSessionFactory=getSqlSessionFactory();
 				sqlSession=sqlSessionFactory.openSession(true);
 				
-				list=sqlSession.selectList(nameSpace+"boardlist",pnum);
+				list=sqlSession.selectList(nameSpace+"boardlist");
 			} catch (Exception e) {
-				System.out.println("JDBC실패:getBoardList():"+getClass());
+				System.out.println("JDBC오류:getBoardList():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -43,27 +42,8 @@ public class BoardDao extends SqlMapConfig {
 			return list;
 		}
 		
-		//글목록의 페이지 수 구하기
-		public int getPCount(){
-			int pcount=0;
-			SqlSession sqlSession=null;
-			
-			try {
-				SqlSessionFactory sqlSessionFactory=getSqlSessionFactory();
-				
-				sqlSession=sqlSessionFactory.openSession(true);
-				pcount=sqlSession.selectOne(nameSpace+"pcount");
-			} catch (Exception e) {
-				System.out.println("JDBC실패:getPCount():"+getClass());
-				e.printStackTrace();
-			}finally {
-				sqlSession.close();
-			}
-			return pcount;
-		}
 		
-		
-		//2. 글 추가하기
+
 		public boolean insertBoard(BoardDto dto) {
 			int count=0;
 			SqlSession sqlSession=null;
@@ -72,7 +52,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				count=sqlSession.insert(nameSpace+"insertboard", dto );
 			} catch (Exception e) {
-				System.out.println("JDBC실패:insertBoard():"+getClass());
+				System.out.println("JDBC오류:insertBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -81,7 +61,7 @@ public class BoardDao extends SqlMapConfig {
 		}
 		
 		
-		//3.글 상세조회
+
 		public BoardDto getBoard(int seq) {
 			BoardDto dto=new BoardDto();
 			SqlSession sqlSession=null;
@@ -89,7 +69,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				dto=sqlSession.selectOne(nameSpace+"getboard", seq);
 			} catch (Exception e) {
-				System.out.println("JDBC실패:getBoard():"+getClass());
+				System.out.println("JDBC오류:getBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -98,7 +78,7 @@ public class BoardDao extends SqlMapConfig {
 		}
 		
 		
-		//4.글 수정하기
+
 		public boolean updateBoard(BoardDto dto) {
 			int count=0;
 			SqlSession sqlSession=null;
@@ -106,7 +86,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				count=sqlSession.update(nameSpace+"updateboard", dto);
 			} catch (Exception e) {
-				System.out.println("JDBC실패:updateBoard():"+getClass());
+				System.out.println("JDBC오류:updateBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -115,7 +95,7 @@ public class BoardDao extends SqlMapConfig {
 		}
 		
 		
-		//5. 글 삭제하기
+
 		public boolean delBoard(int seq) {
 			int count=0;
 			SqlSession sqlSession=null;
@@ -123,7 +103,7 @@ public class BoardDao extends SqlMapConfig {
 				sqlSession=getSqlSessionFactory().openSession(true);
 				count=sqlSession.delete(nameSpace+"delboard", seq);
 			} catch (Exception e) {
-				System.out.println("JDBC실패:delBoard():"+getClass());
+				System.out.println("JDBC오류:delBoard():"+getClass());
 				e.printStackTrace();
 			}finally {
 				sqlSession.close();
@@ -132,7 +112,7 @@ public class BoardDao extends SqlMapConfig {
 		}
 		
 		
-		//6. 글 여러개 삭제하기
+
 		public boolean mulDel(String[] seqs) {
 			int count=0;
 			SqlSession sqlSession=null;

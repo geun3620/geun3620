@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hk.board">
 
@@ -12,13 +10,15 @@
 			SEQ, ID, TITLE, CONTENT, REGDATE
 			FROM BOARD
 		)
-		WHERE CEIL (RN/5)=#{pnum}
+		<!-- WHERE CEIL (RN/5)=#{pnum} -->
 	</select>
 	
+	<!-- 
 	<select id="pcount" resultType="int">
 		SELECT CEIL(COUNT(*)/5)
 		FROM BAORD
 	</select>
+	 -->
 	
 	<insert id="insertboard" parameterType="boardDto" >
 		INSERT INTO BOARD 
@@ -27,7 +27,7 @@
 	
 	<select id="getboard" parameterType="int" resultType="boardDto">
 		SELECT SEQ,ID,TITLE,CONTENT,REGDATE
-		FROM BOARD WHERE seq=#{seq}
+		FROM BOARD WHERE SEQ=#{seq}
 	</select>
 	
 	<update id="updateboard" parameterType="boardDto">
